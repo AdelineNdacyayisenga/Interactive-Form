@@ -15,7 +15,6 @@ const payment = document.querySelector('#payment');
 const paypal = document.querySelector('#paypal');
 const bitcoin = document.querySelector('#bitcoin');
 const creditCard = document.querySelector('#credit-card');
-//const creditCardBox = document.querySelector('.credit-card-box');
 const cardNumber = document.querySelector('#cc-num');
 const zip = document.querySelector('#zip');
 const cvv = document.querySelector('#cvv');
@@ -45,22 +44,17 @@ design.addEventListener ('change', (e) => {
     if(change) {
         color.disabled = false;
     }
-    //look through the color dropdown menu
-
     for (let i = 0; i < colors.length; i++) {
-        const theme = colors[i].getAttribute('data-theme');
+        let theme = colors[i].getAttribute('data-theme');
         if(change.value === theme) {
             colors[i].hidden = false;
-            //colors[i].selected = true;
             colors[i].disabled = false;
+            //change.selected = false;
         } else {
             colors[i].hidden = true;
-            //colors[i].selected = false; 
             colors[i].disabled = true;
+            //colors[i].selected = false;
         }
-    }
-    if (theme.value !== '') {
-        theme.value = 'reselect';
     }
 });
 
@@ -74,13 +68,8 @@ registerForActivities.addEventListener ('change', (e) => {
     } else {
         totalCost -= cost;
     }
-
-    //const dayTime = currentOption.getAttribute("data-day-and-time");
-    
-    //const isChecked = currentOption.checked;
-
     document.querySelector('#activities-cost').innerHTML = `Total: $${totalCost}`;
-
+    activitiesValidator(); //real-time validation for the activities section
 });
 
 //set the credit card option as default, when the page loads. The other payment methods are hidden when the page loads
@@ -106,11 +95,9 @@ payment.addEventListener('change', (e) => {
         creditCard.hidden = true;
         paypal.hidden = true;
     }
-
-    //Q: how to improve my code and avoid redundance
 });
 
-//Form Validation
+/*Form Validation */
 
 function validationPass (element) {
     element.parentElement.classList.add('valid');
@@ -145,6 +132,23 @@ function emailValidator(){
     }
     return emailIsValid;
 }
+// function emailValidator(){
+//     //const emailIsValid = /^[^@]*@[^@.]+\.[a-z]+$/i.test(email.value);
+//     const regex = /^(^@]*@)([^@.]+\.)([a-z]+)$/i;
+//     const emailInput = email.value;
+//     if($1.test(emailInput)) {
+//         console.log($1);
+//         console.log(emailInput);
+//     }
+//     // if(emailIsValid === true) {
+//     //     validationPass(email);
+//     // } else {
+//     //     validationFail(email);
+//     // }
+//     // return emailIsValid;
+// }
+
+// emailValidator();
 
 //check if there is at least one activity
 function activitiesValidator(){
@@ -190,12 +194,9 @@ function cvvValidator() {
     return validCvv;
 }
 
-//Q: Hint doesn't show for the register activities (real time)
-
 //real-time validation errors
 nameElement.addEventListener('keyup', nameValidator);
 email.addEventListener('keyup', emailValidator);
-registerForActivities.addEventListener('keyup', activitiesValidator);
 cardNumber.addEventListener('keyup', cardNumberValidator);
 zip.addEventListener('keyup', zipValidator);
 cvv.addEventListener('keyup', cvvValidator);
@@ -203,44 +204,35 @@ cvv.addEventListener('keyup', cvvValidator);
 form.addEventListener('submit', (e) => {
     if(!nameValidator()){
         e.preventDefault();
-        console.log('Name field must be populated');
     }
     if(!emailValidator()){
         e.preventDefault();
-        console.log('Email field must be populated');
     }
     if(!activitiesValidator()){
         e.preventDefault();
-        console.log('Choose at least 1 activity');
     }
-    if(!cardNumberValidator()){
-        e.preventDefault();
-        console.log('card number must be 13-16 digits, no dashes or spaces');
+    if(payment[1].selected) { //requires those conditions only when credit card was the selected form of payment
+        if(!cardNumberValidator()){
+            e.preventDefault();
+        }
+        if(!zipValidator()){
+            e.preventDefault();
+        }
+        if(!cvvValidator()){
+            e.preventDefault();
+        }
     }
-    if(!zipValidator()){
-        e.preventDefault();
-        console.log('zip must be a 5 digits number');
-    }
-    if(!cvvValidator()){
-        e.preventDefault();
-        console.log('cvv must be a 3 digits number');
-    }
-
 });
 
 //accessibility in the activities section
 //add focus and blur events to easily notice which box is checked
-
 for(let checkbox of checkboxInputs) {
-    //console.log(checkbox);
-    //console.log(checkbox.parentElement);
     checkbox.addEventListener('focus', (e) => {
         const focus = e.target.focus;
         if(focus) {
             checkbox.parentElement.classList.add('focus');
         }
     });
-
     checkbox.addEventListener('blur', (e) => {
         const blur = e.target.blur;
         if(blur) {
@@ -251,37 +243,20 @@ for(let checkbox of checkboxInputs) {
 
 /** EXTRA CREDIT */
 //Conflicting activities
-
-// form.addEventListener('change', (e) => {
-//     const currentOption = e.target;
-
-//     //const dayTime = currentOption.dataset.dayAndTime;
-//     const dayTime = currentOption.getAttribute("data-day-and-time");
+document.querySelector('.activities').addEventListener('change', e => {
+    const clicked = e.target;
+    const clickedDayAndTime = clicked.getAttribute("data-day-and-time");
     
-//     const isChecked = currentOption.checked;
-
-//     for (let i = 0; i < checkboxInputs.length; i ++) {
-//         if (isChecked && checkboxInputs[i].getAttribute("data-day-and-time") === dayTime) {
-//             //checkboxInputs[i].disabled = true;
-//             checkboxInputs[i].parentElement.classList.add('disabled');
-//             currentOption.parentElement.classList.remove('disabled');
-//         } else {
-//             //checkboxInputs[i].disabled = true;
-//             checkboxInputs[i].parentElement.classList.remove('disabled');
-//             currentOption.parentElement.classList.add('disabled');
-//         }
-//     }
-    
-// });
-
-// for(let activity of checkboxInputs) {
-//     //const dayAndTime = activity.dataset.dayAndTime;
-//     console.log(dayAndTime);
-//     if(currentOption.getAttribute("data-day-and-time") === dayAndTime) {
-//         dayAndTime.disabled = true;
-//     } else {
-//         dayAndTime.disabled = false;
-//     }
-// }
-//update the Total cost <p> element
-
+    for(let i = 0; i < checkboxInputs.length; i++) {
+        const checkboxDayAndTime = checkboxInputs[i].getAttribute("data-day-and-time");
+        if(checkboxDayAndTime === clickedDayAndTime && clicked != checkboxInputs[i]) {
+            if(clicked.checked) {
+                checkboxInputs[i].disabled = true;
+                checkboxInputs[i].parentElement.classList.add('disabled');
+            } else {
+                checkboxInputs[i].disabled = false;
+                checkboxInputs[i].parentElement.classList.remove('disabled');
+            }
+        }
+    }
+});
