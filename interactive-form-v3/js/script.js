@@ -75,21 +75,9 @@ registerForActivities.addEventListener ('change', (e) => {
         totalCost -= cost;
     }
 
-    const dayTime = currentOption.getAttribute("data-day-and-time");
+    //const dayTime = currentOption.getAttribute("data-day-and-time");
     
-    const isChecked = currentOption.checked;
-
-    for (let i = 0; i < checkboxInputs.length; i ++) {
-        if (isChecked && checkboxInputs[i].getAttribute("data-day-and-time") === dayTime) {
-            //checkboxInputs[i].disabled = true;
-            checkboxInputs[i].parentElement.classList.add('disabled');
-            currentOption.parentElement.classList.remove('disabled');
-        } else {
-            //checkboxInputs[i].disabled = true;
-            checkboxInputs[i].parentElement.classList.remove('disabled');
-            currentOption.parentElement.classList.add('disabled');
-        }
-    }
+    //const isChecked = currentOption.checked;
 
     document.querySelector('#activities-cost').innerHTML = `Total: $${totalCost}`;
 
@@ -127,13 +115,13 @@ payment.addEventListener('change', (e) => {
 function validationPass (element) {
     element.parentElement.classList.add('valid');
     element.parentElement.classList.remove('not-valid');
-    element.parentElement.lastElementChild.hidden = true;
+    element.parentElement.lastElementChild.style.display = "none";
   }
 
 function validationFail (element) {
     element.parentElement.classList.add('not-valid');
     element.parentElement.classList.remove('valid');
-    element.parentElement.lastElementChild.hidden = false;
+    element.parentElement.lastElementChild.style.display = "block";
 }
 
 //check if name is valid
@@ -264,27 +252,27 @@ for(let checkbox of checkboxInputs) {
 /** EXTRA CREDIT */
 //Conflicting activities
 
-form.addEventListener('change', (e) => {
-    const currentOption = e.target;
+// form.addEventListener('change', (e) => {
+//     const currentOption = e.target;
 
-    //const dayTime = currentOption.dataset.dayAndTime;
-    const dayTime = currentOption.getAttribute("data-day-and-time");
+//     //const dayTime = currentOption.dataset.dayAndTime;
+//     const dayTime = currentOption.getAttribute("data-day-and-time");
     
-    const isChecked = currentOption.checked;
+//     const isChecked = currentOption.checked;
 
-    for (let i = 0; i < checkboxInputs.length; i ++) {
-        if (isChecked && checkboxInputs[i].getAttribute("data-day-and-time") === dayTime) {
-            //checkboxInputs[i].disabled = true;
-            checkboxInputs[i].parentElement.classList.add('disabled');
-            currentOption.parentElement.classList.remove('disabled');
-        } else {
-            //checkboxInputs[i].disabled = true;
-            checkboxInputs[i].parentElement.classList.remove('disabled');
-            currentOption.parentElement.classList.add('disabled');
-        }
-    }
+//     for (let i = 0; i < checkboxInputs.length; i ++) {
+//         if (isChecked && checkboxInputs[i].getAttribute("data-day-and-time") === dayTime) {
+//             //checkboxInputs[i].disabled = true;
+//             checkboxInputs[i].parentElement.classList.add('disabled');
+//             currentOption.parentElement.classList.remove('disabled');
+//         } else {
+//             //checkboxInputs[i].disabled = true;
+//             checkboxInputs[i].parentElement.classList.remove('disabled');
+//             currentOption.parentElement.classList.add('disabled');
+//         }
+//     }
     
-});
+// });
 
 // for(let activity of checkboxInputs) {
 //     //const dayAndTime = activity.dataset.dayAndTime;

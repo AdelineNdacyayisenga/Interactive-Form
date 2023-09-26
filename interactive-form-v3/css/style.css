@@ -95,13 +95,14 @@ legend {
 	width: 100%;
 }
 
+/*
 .valid span {
   display: none;
 }
 .not-valid span {
   display: block;
 }
-
+*/
 label {
   display: block;
   color: rgb(0, 0, 0);
