@@ -114,12 +114,20 @@ function validationFail (element) {
 //check if name is valid
 function nameValidator(){
     const nameIsValid = /^[a-zA-Z]+ ?[a-zA-Z]*? ?[a-zA-Z]*?$/.test(nameElement.value);
-    if(nameIsValid === true) {
+    const label = nameElement.parentElement;
+    if(nameElement.value.length === 0) {
+        label.lastElementChild.innerHTML = label.lastElementChild.innerHTML.replace(/^Name field cannot be blank$/, "The Name can't be blank");
+        label.lastElementChild.style.display = "block";
+    } else if(nameIsValid === true) {
         validationPass(nameElement);
-    } else {
-        validationFail(nameElement);
-    }
-    return nameIsValid;
+         
+    } else if (/^\d+$/.test(nameElement.value)) {
+        label.lastElementChild.innerHTML = label.lastElementChild.innerHTML.replace(/^The Name can't be blank$/, "The Name must be letter characters, not numbers");
+        //validationFail(nameElement); 
+     } else{
+        label.lastElementChild.innerHTML = label.lastElementChild.innerHTML.replace(/^The Name must be letter characters$/, "Only use letter characters");
+     }
+     return nameIsValid;
 }
 
 //check if email is valid
