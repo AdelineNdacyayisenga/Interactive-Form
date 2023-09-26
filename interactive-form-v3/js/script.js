@@ -51,11 +51,16 @@ design.addEventListener ('change', (e) => {
         const theme = colors[i].getAttribute('data-theme');
         if(change.value === theme) {
             colors[i].hidden = false;
-            colors[i].selected = true;
+            //colors[i].selected = true;
+            colors[i].disabled = false;
         } else {
             colors[i].hidden = true;
-            colors[i].selected = false; // Question: why is it randomly choosing a color for me?
+            //colors[i].selected = false; 
+            colors[i].disabled = true;
         }
+    }
+    if (theme.value !== '') {
+        theme.value = 'reselect';
     }
 });
 
@@ -70,7 +75,22 @@ registerForActivities.addEventListener ('change', (e) => {
         totalCost -= cost;
     }
 
-    //update the Total cost <p> element
+    const dayTime = currentOption.getAttribute("data-day-and-time");
+    
+    const isChecked = currentOption.checked;
+
+    for (let i = 0; i < checkboxInputs.length; i ++) {
+        if (isChecked && checkboxInputs[i].getAttribute("data-day-and-time") === dayTime) {
+            //checkboxInputs[i].disabled = true;
+            checkboxInputs[i].parentElement.classList.add('disabled');
+            currentOption.parentElement.classList.remove('disabled');
+        } else {
+            //checkboxInputs[i].disabled = true;
+            checkboxInputs[i].parentElement.classList.remove('disabled');
+            currentOption.parentElement.classList.add('disabled');
+        }
+    }
+
     document.querySelector('#activities-cost').innerHTML = `Total: $${totalCost}`;
 
 });
@@ -182,7 +202,6 @@ function cvvValidator() {
     return validCvv;
 }
 
-//Q: when I type in wrong name and submit, there are weird red borders everywhere and a weird ! after before the activities section
 //Q: Hint doesn't show for the register activities (real time)
 
 //real-time validation errors
@@ -241,3 +260,40 @@ for(let checkbox of checkboxInputs) {
         }
     });
 }
+
+/** EXTRA CREDIT */
+//Conflicting activities
+
+form.addEventListener('change', (e) => {
+    const currentOption = e.target;
+
+    //const dayTime = currentOption.dataset.dayAndTime;
+    const dayTime = currentOption.getAttribute("data-day-and-time");
+    
+    const isChecked = currentOption.checked;
+
+    for (let i = 0; i < checkboxInputs.length; i ++) {
+        if (isChecked && checkboxInputs[i].getAttribute("data-day-and-time") === dayTime) {
+            //checkboxInputs[i].disabled = true;
+            checkboxInputs[i].parentElement.classList.add('disabled');
+            currentOption.parentElement.classList.remove('disabled');
+        } else {
+            //checkboxInputs[i].disabled = true;
+            checkboxInputs[i].parentElement.classList.remove('disabled');
+            currentOption.parentElement.classList.add('disabled');
+        }
+    }
+    
+});
+
+// for(let activity of checkboxInputs) {
+//     //const dayAndTime = activity.dataset.dayAndTime;
+//     console.log(dayAndTime);
+//     if(currentOption.getAttribute("data-day-and-time") === dayAndTime) {
+//         dayAndTime.disabled = true;
+//     } else {
+//         dayAndTime.disabled = false;
+//     }
+// }
+//update the Total cost <p> element
+
