@@ -1,7 +1,10 @@
 
-/*
-Declare variables
-*/
+/**
+ * @author Adeline Ndacyayisenga
+ * Treehouse Full Stack JavaScript Project 3
+ */
+
+//Declare variables
 const form = document.querySelector('form');
 const jobRoles = document.querySelector('#title');
 const nameElement = document.querySelector('#name');
@@ -9,7 +12,7 @@ const email = document.querySelector('#email');
 const otherJob = document.querySelector('.basic-info .other-job-role');
 const color = document.querySelector('#color');
 const design = document.querySelector('#design');
-const colors = document.querySelectorAll('#color option'); //OR colors = color.children()
+const colors = document.querySelectorAll('#color option'); //ALTERNATIVE: colors = color.children()
 const registerForActivities = document.querySelector('#activities-box');
 const payment = document.querySelector('#payment');
 const paypal = document.querySelector('#paypal');
@@ -26,6 +29,9 @@ nameElement.focus();
 //Hide the other job role input text field when the page loads. It will only show if the user choses 'other' on the dropdown menu
 otherJob.setAttribute('type', 'hidden');
 
+/*
+Listens for changes detected as the user selects a job role
+*/
 jobRoles.addEventListener('change', (e) => {
     const jobChange = e.target;
     if (jobChange.value === "other") {
@@ -36,9 +42,12 @@ jobRoles.addEventListener('change', (e) => {
 });
 
 //Disable the color <select> element until user chooses a design
-//color.setAttribute('disabled', true);
+    //ALTERNATIVE: color.setAttribute('disabled', true);
 color.disabled = true;
 
+/*
+Listens for changes detected as the user selects a design/theme
+*/
 design.addEventListener ('change', (e) => {
     const change = e.target;
     if(change) {
@@ -49,17 +58,17 @@ design.addEventListener ('change', (e) => {
         if(change.value === theme) {
             colors[i].hidden = false;
             colors[i].disabled = false;
-            //change.selected = false;
         } else {
             colors[i].hidden = true;
             colors[i].disabled = true;
-            //colors[i].selected = false;
         }
     }
 });
 
-// Total the cost of all selected activities
-let totalCost = 0;
+let totalCost = 0; // Total the cost of all selected activities
+/*
+Listens for changes detected as the user selects activities and calculates/displays the total cost
+*/
 registerForActivities.addEventListener ('change', (e) => {
     const currentOption = e.target;
     const cost = parseInt(currentOption.getAttribute('data-cost'));
@@ -73,10 +82,13 @@ registerForActivities.addEventListener ('change', (e) => {
 });
 
 //set the credit card option as default, when the page loads. The other payment methods are hidden when the page loads
-payment[1].selected = true; // can also use the .children property and the setAttribute()
+payment[1].selected = true; //ALTERNATIVE: can also use the .children property and the setAttribute()
 paypal.hidden = true;
 bitcoin.hidden = true;
 
+/*
+Listens for changes detected as the user selects a payment method
+*/
 payment.addEventListener('change', (e) => {
     const currentOption = e.target.value;
     
@@ -97,40 +109,52 @@ payment.addEventListener('change', (e) => {
     }
 });
 
-/*Form Validation */
-
+/**
+ * When the user input passes the validation check
+ * @param {HTMLInputElement} element The specific element to validate
+ */
 function validationPass (element) {
     element.parentElement.classList.add('valid');
     element.parentElement.classList.remove('not-valid');
     element.parentElement.lastElementChild.style.display = "none";
   }
 
+/**
+ * When the user input fails the validation check
+ * @param {HTMLInputElement} element The specific element to validate
+ */
 function validationFail (element) {
     element.parentElement.classList.add('not-valid');
     element.parentElement.classList.remove('valid');
     element.parentElement.lastElementChild.style.display = "block";
 }
 
-//check if name is valid
+/**
+ * Checks if the user name is valid
+ * @returns boolean value; true if the name is valid and false otherwise
+ */
 function nameValidator(){
     const nameIsValid = /^[a-zA-Z]+ ?[a-zA-Z]*? ?[a-zA-Z]*?$/.test(nameElement.value);
     const label = nameElement.parentElement;
     if(nameElement.value.length === 0) {
-        label.lastElementChild.innerHTML = label.lastElementChild.innerHTML.replace(/^Name field cannot be blank$/, "The Name can't be blank");
+        label.classList.add('not-valid');
+        label.classList.remove('valid');
         label.lastElementChild.style.display = "block";
-    } else if(nameIsValid === true) {
+    } else if(nameElement.value.length > 0 && nameIsValid === false) {
+        label.lastElementChild.innerHTML = label.lastElementChild.innerHTML.replace(/^Name field cannot be blank$/, "The Name must be letter characters");
+        label.classList.add('not-valid');
+        label.classList.remove('valid');
+        label.lastElementChild.style.display = "block";
+    } else {
         validationPass(nameElement);
-         
-    } else if (/^\d+$/.test(nameElement.value)) {
-        label.lastElementChild.innerHTML = label.lastElementChild.innerHTML.replace(/^The Name can't be blank$/, "The Name must be letter characters, not numbers");
-        //validationFail(nameElement); 
-     } else{
-        label.lastElementChild.innerHTML = label.lastElementChild.innerHTML.replace(/^The Name must be letter characters$/, "Only use letter characters");
+        return nameIsValid; 
      }
-     return nameIsValid;
 }
 
-//check if email is valid
+/**
+ * Checks if the user email is valid
+ * @returns boolean value; true if the email is valid and false otherwise
+ */
 function emailValidator(){
     const emailIsValid = /^[^@]*@[^@.]+\.[a-z]+$/i.test(email.value);
     if(emailIsValid === true) {
@@ -140,25 +164,11 @@ function emailValidator(){
     }
     return emailIsValid;
 }
-// function emailValidator(){
-//     //const emailIsValid = /^[^@]*@[^@.]+\.[a-z]+$/i.test(email.value);
-//     const regex = /^(^@]*@)([^@.]+\.)([a-z]+)$/i;
-//     const emailInput = email.value;
-//     if($1.test(emailInput)) {
-//         console.log($1);
-//         console.log(emailInput);
-//     }
-//     // if(emailIsValid === true) {
-//     //     validationPass(email);
-//     // } else {
-//     //     validationFail(email);
-//     // }
-//     // return emailIsValid;
-// }
 
-// emailValidator();
-
-//check if there is at least one activity
+/**
+ * Checks if the user selected at least one activity
+ * @returns boolean value; true if there is at least one activity and false otherwise
+ */
 function activitiesValidator(){
     const activitiesValid = totalCost > 0;
     if(activitiesValid === true) {
@@ -169,7 +179,11 @@ function activitiesValidator(){
     return activitiesValid;
 }
 
-//check if card number is valid 13-16 digits; no dashes or spaces
+/**
+ * Checks if card number is valid, 13 to 16 digits
+ * @returns boolean value; true if the card number is valid and false otherwise
+ */
+
 function cardNumberValidator(){
     const validCardNumber = /^\d{13,16}$/.test(cardNumber.value);
     if(validCardNumber === true) {
@@ -180,7 +194,10 @@ function cardNumberValidator(){
     return validCardNumber;
 }
 
-//check if the zip value is valid, 5 digits
+/**
+* Checks if zip value is valid, 5 digits
+* @returns boolean value; true if the zip value is valid and false otherwise
+*/
 function zipValidator() {
     const validZip = /^\d{5}$/.test(zip.value);
     if(validZip === true) {
@@ -191,7 +208,10 @@ function zipValidator() {
     return validZip;
 }
 
-//check if the cvv is valid, 3 digits
+/**
+ * Checks if cvv number is valid, 3 digits
+ * @returns boolean value; true if the cvv number is valid and false otherwise
+ */
 function cvvValidator() {
     const validCvv = /^\d{3}$/.test(cvv.value);
     if(validCvv === true) {
@@ -209,6 +229,9 @@ cardNumber.addEventListener('keyup', cardNumberValidator);
 zip.addEventListener('keyup', zipValidator);
 cvv.addEventListener('keyup', cvvValidator);
 
+/*
+Listens for form submit event and checks if all required sections are valid before submitting the form
+*/
 form.addEventListener('submit', (e) => {
     if(!nameValidator()){
         e.preventDefault();
@@ -250,7 +273,7 @@ for(let checkbox of checkboxInputs) {
 }
 
 /** EXTRA CREDIT */
-//Conflicting activities
+//Handle Conflicting activities; the conflicting activity is disabled
 document.querySelector('.activities').addEventListener('change', e => {
     const clicked = e.target;
     const clickedDayAndTime = clicked.getAttribute("data-day-and-time");
